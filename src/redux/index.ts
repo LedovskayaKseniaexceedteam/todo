@@ -1,11 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit"; 
-import todo from './todoSlice'
+import { createStore, applyMiddleware, combineReducers } from "redux";
+import { todoReducer } from "./todoReducer";
+import thunk from "redux-thunk";
 
-export const store = configureStore({
-  reducer: {
-    todo 
-  },
+const rootReducer = combineReducers({
+  todos: todoReducer,
 });
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export const store = createStore(rootReducer, applyMiddleware(thunk));
+export type RootState = {
+  todos: Todo[];
+  error: string;
+};

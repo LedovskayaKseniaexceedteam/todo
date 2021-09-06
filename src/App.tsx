@@ -8,11 +8,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import { FormEvent, useState } from "react";
-import { add, remove, toggle, removeAll } from "./redux/todoSlice";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "./redux";
 import { Todo } from "./components/Todo";
 import { useTodos } from "./hooks/useTodos";
+import { addTodo, removeAllTodos, removeTodo, toggleTodo } from "./redux/AC";
 
 const useStyles = makeStyles({
   view: {
@@ -59,16 +58,16 @@ export const App = () => {
   const classes = useStyles();
   const [todos, setFilter] = useTodos();
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
   const [input, setInput] = useState("");
-  const addTodo = (task: Todo["task"]) => dispatch(add(task));
-  const toggleTodo = (id: Todo["id"]) => dispatch(toggle(id));
-  const removeTodo = (id: Todo["id"]) => dispatch(remove(id));
-  const removeAllTodos = () => dispatch(removeAll());
+  const add = (task: Todo["title"]) => dispatch(addTodo(task));
+  const toggle = (id: Todo["_id"]) => dispatch(toggleTodo(id));
+  const remove = (id: Todo["_id"]) => dispatch(removeTodo(id));
+  const removeAll = () => dispatch(removeAllTodos());
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
-    addTodo(input.trim());
+    add(input.trim());
     setInput("");
   };
   const filterButtons: FilterType[] = ["all", "completed", "in progress"];
@@ -105,9 +104,9 @@ export const App = () => {
           {!!todos.value.length &&
             todos.value.map((todo) => (
               <Todo
-                key={todo.id}
-                toggle={toggleTodo}
-                remove={removeTodo}
+                key={todo._id}
+                toggle={toggle}
+                remove={remove}
                 todo={todo}
               />
             ))}
@@ -125,8 +124,8 @@ export const App = () => {
             </Button>
           ))}
           <Button
-            onClick={removeAllTodos}
-            onKeyDown={(e) => (e.key === "Enter" ? removeAllTodos() : null)}
+            onClick={removeAll}
+            onKeyDown={(e) => (e.key === "Enter" ? removeAll() : null)}
             className={classes.clear}
             variant="contained"
             color="secondary"
