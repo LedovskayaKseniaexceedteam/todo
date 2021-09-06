@@ -7,11 +7,12 @@ import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { add, remove, toggle, removeAll } from "./redux/todoSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "./redux";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./redux";
 import { Todo } from "./components/Todo";
+import { useTodos } from "./hooks/useTodos";
 
 const useStyles = makeStyles({
   view: {
@@ -53,44 +54,15 @@ const useStyles = makeStyles({
 
 export const App = () => {
   const classes = useStyles();
+  const [todos, setFilter] = useTodos();
 
   const dispatch: AppDispatch = useDispatch();
   const [input, setInput] = useState("");
-  const todos = useSelector((state: RootState) => state.todo.value);
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(add(input));
     setInput("");
   };
-  const [filter, setFilter] = useState<"all" | "completed" | "inProgress">(
-    "all"
-  );
-  const [filteredTodos, setFilteredTodos] = useState({
-    filter,
-    value: todos,
-  });
-
-  useEffect(() => {
-    if (filter == "all") {
-      setFilteredTodos({
-        filter,
-        value: todos,
-      });
-    } else if (filter == "completed") {
-      setFilteredTodos({
-        filter,
-        value: todos.filter((todo) => todo.done),
-      });
-    } else if (filter == "inProgress") {
-      setFilteredTodos({
-        filter,
-        value: todos.filter((todo) => !todo.done),
-      });
-    } else {
-      throw new Error("wrong filter");
-    }
-  }, [filter, todos]);
 
   return (
     <Container className={classes.view}>
@@ -116,13 +88,13 @@ export const App = () => {
               add
             </Button>
           </form>
-          {!filteredTodos.value.length && (
+          {!todos.length && (
             <Typography className={classes.message}>
               No records found
             </Typography>
           )}
-          {!!filteredTodos.value.length &&
-            filteredTodos.value.map((todo) => (
+          {!!todos.length &&
+            todos.map((todo) => (
               <Todo
                 toggle={() => dispatch(toggle(todo.id))}
                 remove={() => dispatch(remove(todo.id))}
