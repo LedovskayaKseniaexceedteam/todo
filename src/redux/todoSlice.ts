@@ -15,7 +15,7 @@ const todoSlice = createSlice({
       >
     ) => {
       state.value.push({
-        done: false,
+        isDone: false,
         task: action.payload,
         id: Date.now(),
       });
@@ -29,7 +29,7 @@ const todoSlice = createSlice({
       const targetIndex = state.value.findIndex(
         (item) => item.id === action.payload
       );
-      state.value[targetIndex].done = !state.value[targetIndex].done;
+      state.value[targetIndex].isDone = !state.value[targetIndex].isDone;
     },
     remove: (
       state,

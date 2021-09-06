@@ -1,5 +1,6 @@
 type Todo = {
-    done: boolean,
-    task: string,
-    id: number
-}
+  isDone: boolean;
+  task: string;
+  id: number;
+};
+type FilterType = "all" | "completed" | "in progress";

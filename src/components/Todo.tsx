@@ -32,7 +32,7 @@ export const Todo = ({ todo, toggle, remove }: Props) => {
   const classes = useStyles();
   return (
     <Typography
-      className={`${classes.todo} ${todo.done ? classes.todo_done : ""}`}
+      className={`${classes.todo} ${todo.isDone ? classes.todo_done : ""}`}
       onClick={() => toggle(todo.id)}
     >
       <span className={classes.task}>{todo.task}</span>

@@ -50,6 +50,9 @@ const useStyles = makeStyles({
     marginTop: 10,
     textAlign: "center",
   },
+  currentFilter: {
+    textDecoration: "underline",
+  },
 });
 
 export const App = () => {
@@ -64,9 +67,11 @@ export const App = () => {
   const removeAllTodos = () => dispatch(removeAll());
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addTodo(input);
+    if (!input.trim()) return;
+    addTodo(input.trim());
     setInput("");
   };
+  const filterButtons: FilterType[] = ["all", "completed", "in progress"];
 
   return (
     <Container className={classes.view}>
@@ -92,42 +97,33 @@ export const App = () => {
               add
             </Button>
           </form>
-          {!todos.length && (
+          {!todos.value.length && (
             <Typography className={classes.message}>
               No records found
             </Typography>
           )}
-          {!!todos.length &&
-            todos.map((todo) => (
-              <Todo toggle={toggleTodo} remove={removeTodo} todo={todo} />
+          {!!todos.value.length &&
+            todos.value.map((todo) => (
+              <Todo
+                key={todo.id}
+                toggle={toggleTodo}
+                remove={removeTodo}
+                todo={todo}
+              />
             ))}
         </CardContent>
         <CardActions>
-          <Button
-            onClick={() => setFilter("all")}
-            onKeyDown={(e) => (e.key === "Enter" ? setFilter("all") : null)}
-            size="small"
-          >
-            All
-          </Button>
-          <Button
-            onClick={() => setFilter("completed")}
-            onKeyDown={(e) =>
-              e.key === "Enter" ? setFilter("completed") : null
-            }
-            size="small"
-          >
-            Completed
-          </Button>
-          <Button
-            onClick={() => setFilter("inProgress")}
-            onKeyDown={(e) =>
-              e.key === "Enter" ? setFilter("inProgress") : null
-            }
-            size="small"
-          >
-            In Progress
-          </Button>
+          {filterButtons.map((button) => (
+            <Button
+              key={button}
+              className={todos.filter === button ? classes.currentFilter : ""}
+              onClick={() => setFilter(button as FilterType)}
+              onKeyDown={(e) => (e.key === "Enter" ? setFilter(button) : null)}
+              size="small"
+            >
+              {button}
+            </Button>
+          ))}
           <Button
             onClick={removeAllTodos}
             onKeyDown={(e) => (e.key === "Enter" ? removeAllTodos() : null)}
