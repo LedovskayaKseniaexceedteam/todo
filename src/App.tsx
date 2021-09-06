@@ -77,7 +77,7 @@ export const App = () => {
     <Container className={classes.view}>
       <Card className={classes.root}>
         <CardContent>
-          <Typography className={classes.title} variant="h5" component="h2">
+          <Typography className={classes.title} variant="h5" component="h1">
             ToDos
           </Typography>
           <form

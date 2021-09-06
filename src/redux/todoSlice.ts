@@ -29,6 +29,7 @@ const todoSlice = createSlice({
       const targetIndex = state.value.findIndex(
         (item) => item.id === action.payload
       );
+      if (targetIndex === -1) return;
       state.value[targetIndex].isDone = !state.value[targetIndex].isDone;
     },
     remove: (

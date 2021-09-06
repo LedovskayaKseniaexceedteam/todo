@@ -37,8 +37,7 @@ export const Todo = ({ todo, toggle, remove }: Props) => {
     >
       <span className={classes.task}>{todo.task}</span>
       <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           remove(todo.id);
         }}
         onKeyDown={(e) => (e.key === "Enter" ? remove(todo.id) : null)}
