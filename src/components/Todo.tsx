@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 type Props = {
   todo: Todo;
-  toggle: () => void;
-  remove: () => void;
+  toggle: (id: Todo["id"]) => void;
+  remove: (id: Todo["id"]) => void;
 };
 
 const useStyles = makeStyles({
@@ -33,15 +33,15 @@ export const Todo = ({ todo, toggle, remove }: Props) => {
   return (
     <Typography
       className={`${classes.todo} ${todo.done ? classes.todo_done : ""}`}
-      onClick={toggle}
+      onClick={() => toggle(todo.id)}
     >
       <span className={classes.task}>{todo.task}</span>
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
-          remove();
+          remove(todo.id);
         }}
-        onKeyDown={(e) => (e.key === "Enter" ? remove() : null)}
+        onKeyDown={(e) => (e.key === "Enter" ? remove(todo.id) : null)}
         aria-label="delete"
       >
         <DeleteIcon />

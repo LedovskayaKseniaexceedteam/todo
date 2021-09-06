@@ -58,9 +58,13 @@ export const App = () => {
 
   const dispatch: AppDispatch = useDispatch();
   const [input, setInput] = useState("");
+  const addTodo = (task: Todo["task"]) => dispatch(add(task));
+  const toggleTodo = (id: Todo["id"]) => dispatch(toggle(id));
+  const removeTodo = (id: Todo["id"]) => dispatch(remove(id));
+  const removeAllTodos = () => dispatch(removeAll());
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(add(input));
+    addTodo(input);
     setInput("");
   };
 
@@ -95,11 +99,7 @@ export const App = () => {
           )}
           {!!todos.length &&
             todos.map((todo) => (
-              <Todo
-                toggle={() => dispatch(toggle(todo.id))}
-                remove={() => dispatch(remove(todo.id))}
-                todo={todo}
-              />
+              <Todo toggle={toggleTodo} remove={removeTodo} todo={todo} />
             ))}
         </CardContent>
         <CardActions>
@@ -129,10 +129,8 @@ export const App = () => {
             In Progress
           </Button>
           <Button
-            onClick={() => dispatch(removeAll())}
-            onKeyDown={(e) =>
-              e.key === "Enter" ? dispatch(removeAll()) : null
-            }
+            onClick={removeAllTodos}
+            onKeyDown={(e) => (e.key === "Enter" ? removeAllTodos() : null)}
             className={classes.clear}
             variant="contained"
             color="secondary"
