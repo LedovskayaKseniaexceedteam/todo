@@ -23,3 +23,7 @@ export const setError = (e: TError) => ({
   type: TYPES.SET_ERROR,
   payload: e.message,
 });
+export const setIsLoading = (isLoading: boolean) => ({
+  type: TYPES.SET_IS_LOADING,
+  payload: isLoading,
+});

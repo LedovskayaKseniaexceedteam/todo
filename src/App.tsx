@@ -8,9 +8,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import { FormEvent, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Todo } from "./components/Todo";
 import { useTodos } from "./hooks/useTodos";
+
 import {
   addTodo,
   getAllTodos,
@@ -18,6 +19,8 @@ import {
   removeTodo,
   toggleTodo,
 } from "./redux/thunks";
+import { AppState } from "./redux";
+import { Loader } from "./components/Loader";
 
 const useStyles = makeStyles({
   view: {
@@ -66,13 +69,15 @@ const useStyles = makeStyles({
 export const App = () => {
   const classes = useStyles();
   const [todos, setFilter] = useTodos();
-
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
+  const isLoading = useSelector((state: AppState) => state.isLoading);
+
   const add = (task: Todo["title"]) => dispatch(addTodo(task));
   const toggle = (id: Todo["_id"]) => dispatch(toggleTodo(id));
   const remove = (id: Todo["_id"]) => dispatch(removeTodo(id));
   const removeAll = () => dispatch(removeAllTodos());
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -105,10 +110,16 @@ export const App = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
-            <Button type="submit" variant="outlined" color="primary">
-              add
+            <Button
+              disabled={isLoading}
+              type="submit"
+              variant="outlined"
+              color="primary"
+            >
+              Add
             </Button>
           </form>
+          {isLoading && <Loader />}
           {!todos.value.length && (
             <Typography className={classes.message}>
               No records found

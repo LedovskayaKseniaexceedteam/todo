@@ -22,6 +22,7 @@ const useStyles = makeStyles({
     textDecoration: "line-through",
   },
   task: {
+    flex: 1,
     fontSize: 20,
     display: "flex",
     alignItems: "center",
@@ -33,12 +34,12 @@ export const Todo = ({ todo, toggle, remove }: Props) => {
   return (
     <Typography
       className={`${classes.todo} ${todo.isDone ? classes.todo_done : ""}`}
-      onClick={() => toggle(todo._id)}
     >
-      <span className={classes.task}>{todo.title}</span>
+      <span onClick={() => toggle(todo._id)} className={classes.task}>
+        {todo.title}
+      </span>
       <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           remove(todo._id);
         }}
         onKeyDown={(e) => (e.key === "Enter" ? remove(todo._id) : null)}

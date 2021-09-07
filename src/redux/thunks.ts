@@ -1,12 +1,16 @@
-import { Dispatch } from "redux";
+import { Action, Dispatch } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { AppState } from ".";
 import { setError } from "./actions";
 import { remove, removeAll, set, toggle } from "./actions";
+import { setIsLoading } from "./actions";
 
 const apiKey = "788d7b49-586a-4edc-93eb-2de97ab9b41c";
 const baseURL = "https://exceed-todo-list.herokuapp.com/api/v1";
 
 export const getAllTodos = () => async (dispatch: Dispatch) => {
   try {
+    dispatch(setIsLoading(true));
     const response = await fetch(`${baseURL}/todos`, {
       method: "GET",
       headers: {
@@ -19,6 +23,8 @@ export const getAllTodos = () => async (dispatch: Dispatch) => {
     }
   } catch (e) {
     setError(e as Error);
+  } finally {
+    dispatch(setIsLoading(false));
   }
 };
 export const removeAllTodos = () => (dispatch: Dispatch) => {
@@ -35,25 +41,29 @@ export const removeAllTodos = () => (dispatch: Dispatch) => {
       setError(e);
     });
 };
-export const addTodo = (title: Todo["title"]) => async (dispatch: Dispatch) => {
-  try {
-    const response = await fetch(`${baseURL}/todos`, {
-      method: "POST",
-      headers: {
-        apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ title }),
-    });
-    if (response.ok) {
-      //! беда с типами
-      // @ts-ignore
-      dispatch(getAllTodos());
+export const addTodo =
+  (title: Todo["title"]) => async (dispatch: Dispatch<Action<any>>) => {
+    try {
+      dispatch(setIsLoading(true));
+      const response = await fetch(`${baseURL}/todos`, {
+        method: "POST",
+        headers: {
+          apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title }),
+      });
+      if (response.ok) {
+        (dispatch as ThunkDispatch<AppState, unknown, Action<any>>)(
+          getAllTodos()
+        );
+      }
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      dispatch(setIsLoading(false));
     }
-  } catch (e) {
-    setError(e as Error);
-  }
-};
+  };
 export const toggleTodo =
   (id: Todo["_id"]) =>
   (dispatch: Dispatch, getState: () => { todos: Todo[] }) => {
