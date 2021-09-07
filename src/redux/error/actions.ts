@@ -1,6 +1,6 @@
 import { SET_ERROR } from "./types";
 
-export const setError = (e: TError) => ({
+export const setError = (error: string | null) => ({
   type: SET_ERROR,
-  payload: e.message,
+  payload: error,
 });

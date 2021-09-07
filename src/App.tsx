@@ -11,6 +11,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Todo } from "./components/Todo";
 import { useTodos } from "./hooks/useTodos";
+import Alert from "@material-ui/lab/Alert";
 
 import {
   addTodo,
@@ -18,7 +19,7 @@ import {
   removeAllTodos,
   removeTodo,
   toggleTodo,
-} from "./redux/AC";
+} from "./redux/todos/actions";
 import { AppState } from "./redux";
 import { Loader } from "./components/Loader";
 
@@ -68,10 +69,13 @@ const useStyles = makeStyles({
 
 export const App = () => {
   const classes = useStyles();
-  const [todos, setFilter] = useTodos();
-  const dispatch = useDispatch();
   const [input, setInput] = useState("");
-  const isLoading = useSelector((state: AppState) => state.isLoading);
+
+  const [todos, setFilter] = useTodos();
+
+  const loading = useSelector((state: AppState) => state.loading);
+  const error = useSelector((state: AppState) => state.error);
+  const dispatch = useDispatch();
 
   const add = (task: Todo["title"]) => dispatch(addTodo(task));
   const toggle = (id: Todo["_id"]) => dispatch(toggleTodo(id));
@@ -111,7 +115,7 @@ export const App = () => {
               onChange={(e) => setInput(e.target.value)}
             />
             <Button
-              disabled={isLoading.state && !isLoading.target}
+              disabled={loading.isLoading && !loading.target}
               type="submit"
               variant="outlined"
               color="primary"
@@ -119,7 +123,8 @@ export const App = () => {
               Add
             </Button>
           </form>
-          {isLoading.state && <Loader />}
+          {loading.isLoading && <Loader />}
+          {!!error && <Alert severity="error">{error}</Alert>}
           {!todos.value.length && (
             <Typography className={classes.message}>
               No records found
@@ -128,7 +133,7 @@ export const App = () => {
           {!!todos.value.length &&
             todos.value.map((todo) => (
               <Todo
-                isDisabled={isLoading.state && isLoading.target === todo._id}
+                isDisabled={loading.isLoading && loading.target === todo._id}
                 key={todo._id}
                 toggle={toggle}
                 remove={remove}
@@ -152,7 +157,7 @@ export const App = () => {
             disabled={
               !todos.value.length ||
               !todos.value.some((todo) => todo.isDone) ||
-              (isLoading.state && isLoading.target === "all")
+              (loading.isLoading && loading.target === "all")
             }
             onClick={removeAll}
             onKeyDown={(e) => (e.key === "Enter" ? removeAll() : null)}

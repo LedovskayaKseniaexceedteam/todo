@@ -1,17 +1,13 @@
+import { AnyAction } from "redux";
 import * as TYPES from "./types";
 
 const initialState = [] as Todo[];
 
-export type TodosInitialState = typeof initialState;
-
 export const todosReducer = (
   state = initialState,
   // не получилось вывести типы
-  action: {
-    type: keyof typeof TYPES;
-    payload?: Todo | Todo[] | Todo["_id"];
-  }
-) => {
+  action: AnyAction
+): typeof initialState => {
   switch (action.type) {
     case TYPES.SET_TODOS:
       return action.payload;
