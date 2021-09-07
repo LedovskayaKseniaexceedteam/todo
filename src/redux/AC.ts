@@ -61,6 +61,8 @@ export const addTodo =
         (dispatch as ThunkDispatch<AppState, unknown, Action<any>>)(
           getAllTodos()
         );
+      } else {
+        dispatch(setIsLoading({ state: false }));
       }
     } catch (e) {
       setError(e as Error);
