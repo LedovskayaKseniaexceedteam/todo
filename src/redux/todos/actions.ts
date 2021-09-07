@@ -24,9 +24,9 @@ export const remove = (id: Todo["_id"]) => ({
   payload: id,
 });
 
-function timeout(sec: number) {
+const timeout = (sec: number) => {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-}
+};
 
 const apiKey = "788d7b49-586a-4edc-93eb-2de97ab9b41c";
 const baseURL = "https://exceed-todo-list.herokuapp.com/api/v1";
@@ -121,40 +121,45 @@ export const addTodo =
       dispatch(setLoading({ isLoading: false }));
     }
   };
-export const toggleTodo = (id: Todo["_id"]) => (dispatch: Dispatch) => {
-  dispatch(setError(null));
-  dispatch(
-    setLoading({
-      isLoading: true,
-      target: id,
-    })
-  );
-  Promise.race([
-    fetch(`${baseURL}/todos/${id}/done`, {
-      method: "PUT",
-      headers: {
-        apiKey,
-      },
-    }),
-    timeout(TIMEOUT_IN_SEC).then(() => {
-      throw new Error("Request took too long");
-    }),
-  ])
-    .then(async (response) => {
-      if (response.ok) {
-        dispatch(toggle(id));
-      } else {
-        const result = await response.json();
-        throw new Error(result.error);
-      }
-    })
-    .catch((e) => {
-      dispatch(setError(e.message || e));
-    })
-    .finally(() => {
-      dispatch(setLoading({ isLoading: false }));
-    });
-};
+export const toggleTodo =
+  (id: Todo["_id"]) => (dispatch: Dispatch, getState: () => AppState) => {
+    dispatch(setError(null));
+    dispatch(
+      setLoading({
+        isLoading: true,
+        target: id,
+      })
+    );
+    Promise.race([
+      fetch(`${baseURL}/todos/${id}/done`, {
+        method: "PUT",
+        headers: {
+          apiKey,
+        },
+      }),
+      timeout(TIMEOUT_IN_SEC).then(() => {
+        throw new Error("Request took too long");
+      }),
+    ])
+      .then(async (response) => {
+        if (response.ok) {
+          dispatch(toggle(id));
+        } else {
+          const result = await response.json();
+          throw new Error(result.error);
+        }
+      })
+      .catch((e) => {
+        dispatch(setError(e.message || e));
+      })
+      .finally(() => {
+        dispatch(
+          setLoading({
+            isLoading: false,
+          })
+        );
+      });
+  };
 export const removeTodo = (id: Todo["_id"]) => (dispatch: Dispatch) => {
   dispatch(setError(null));
   dispatch(setLoading({ isLoading: true, target: id }));
