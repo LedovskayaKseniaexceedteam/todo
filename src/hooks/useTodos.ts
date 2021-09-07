@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { RootState } from "../redux";
+import { AppState } from "../redux";
 
 export const useTodos = () => {
-  const todos = useSelector((state: RootState) => state.todos);
+  const todos = useSelector((state: AppState) => state.todos);
 
   const [filter, setFilter] = useState<FilterType>("all");
   const [filteredTodos, setFilteredTodos] = useState({

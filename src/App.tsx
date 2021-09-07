@@ -7,11 +7,17 @@ import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Todo } from "./components/Todo";
 import { useTodos } from "./hooks/useTodos";
-import { addTodo, removeAllTodos, removeTodo, toggleTodo } from "./redux/AC";
+import {
+  addTodo,
+  getAllTodos,
+  removeAllTodos,
+  removeTodo,
+  toggleTodo,
+} from "./redux/thunks";
 
 const useStyles = makeStyles({
   view: {
@@ -32,9 +38,12 @@ const useStyles = makeStyles({
   },
   footer: {
     display: "flex",
-    backgroundColor: "#f2f2f2",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   clear: {
+    minWidth: "33.333%",
+    whiteSpace: "nowrap",
     flex: 1,
     marginLeft: "auto",
   },
@@ -71,6 +80,10 @@ export const App = () => {
     setInput("");
   };
   const filterButtons: FilterType[] = ["all", "completed", "in progress"];
+
+  useEffect(() => {
+    dispatch(getAllTodos());
+  }, []);
 
   return (
     <Container className={classes.view}>
@@ -111,7 +124,7 @@ export const App = () => {
               />
             ))}
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.footer}>
           {filterButtons.map((button) => (
             <Button
               key={button}
@@ -131,7 +144,7 @@ export const App = () => {
             color="secondary"
             startIcon={<DeleteIcon />}
           >
-            Remove All
+            Clear
           </Button>
         </CardActions>
       </Card>

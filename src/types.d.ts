@@ -6,4 +6,4 @@ type Todo = {
   createdAt: string;
 };
 type FilterType = "all" | "completed" | "in progress";
-type Error = { message: string };
+type TError = { message: string };
