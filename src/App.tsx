@@ -18,7 +18,7 @@ import {
   removeAllTodos,
   removeTodo,
   toggleTodo,
-} from "./redux/thunks";
+} from "./redux/AC";
 import { AppState } from "./redux";
 import { Loader } from "./components/Loader";
 
@@ -111,7 +111,7 @@ export const App = () => {
               onChange={(e) => setInput(e.target.value)}
             />
             <Button
-              disabled={isLoading}
+              disabled={isLoading.state && !isLoading.target}
               type="submit"
               variant="outlined"
               color="primary"
@@ -119,7 +119,7 @@ export const App = () => {
               Add
             </Button>
           </form>
-          {isLoading && <Loader />}
+          {isLoading.state && <Loader />}
           {!todos.value.length && (
             <Typography className={classes.message}>
               No records found
@@ -128,6 +128,7 @@ export const App = () => {
           {!!todos.value.length &&
             todos.value.map((todo) => (
               <Todo
+                isDisabled={isLoading.state && isLoading.target === todo._id}
                 key={todo._id}
                 toggle={toggle}
                 remove={remove}
@@ -148,6 +149,11 @@ export const App = () => {
             </Button>
           ))}
           <Button
+            disabled={
+              !todos.value.length ||
+              !todos.value.some((todo) => todo.isDone) ||
+              (isLoading.state && isLoading.target === "all")
+            }
             onClick={removeAll}
             onKeyDown={(e) => (e.key === "Enter" ? removeAll() : null)}
             className={classes.clear}

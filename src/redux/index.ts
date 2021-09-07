@@ -1,7 +1,10 @@
 import { createStore, applyMiddleware, combineReducers } from "redux";
-import { todosReducer as todos } from "./todosReducer";
-import { errorReducer as error } from "./errorReducer";
-import { isLoadingReducer as isLoading } from "./isLoadingReducer";
+import { TodosInitialState, todosReducer as todos } from "./todos/todosReducer";
+import { ErrorInitialState, errorReducer as error } from "./error/errorReducer";
+import {
+  IsLoadingInitialState,
+  isLoadingReducer as isLoading,
+} from "./isLoading/isLoadingReducer";
 import thunk from "redux-thunk";
 
 const rootReducer = combineReducers({
@@ -11,11 +14,8 @@ const rootReducer = combineReducers({
 });
 
 export const store = createStore(rootReducer, applyMiddleware(thunk));
-// export type AppState = ReturnType<typeof rootReducer>
 export type AppState = {
-  todos: Todo[];
-  error: null | TError["message"];
-  isLoading: boolean;
+  todos: TodosInitialState;
+  error: ErrorInitialState;
+  isLoading: IsLoadingInitialState;
 };
-// @ts-ignore
-window.__store__ = store;

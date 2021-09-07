@@ -2,6 +2,7 @@ import { setError } from "./actions";
 import { SET_ERROR } from "./types";
 
 const initialState = null as null | TError;
+export type ErrorInitialState = typeof initialState;
 
 export const errorReducer = (
   state = initialState,

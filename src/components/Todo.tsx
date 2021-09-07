@@ -2,11 +2,13 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
+import { FC } from "react";
 
 type Props = {
   todo: Todo;
   toggle: (id: Todo["_id"]) => void;
   remove: (id: Todo["_id"]) => void;
+  isDisabled: boolean;
 };
 
 const useStyles = makeStyles({
@@ -29,16 +31,20 @@ const useStyles = makeStyles({
   },
 });
 
-export const Todo = ({ todo, toggle, remove }: Props) => {
+export const Todo: FC<Props> = ({ todo, toggle, remove, isDisabled }) => {
   const classes = useStyles();
   return (
     <Typography
       className={`${classes.todo} ${todo.isDone ? classes.todo_done : ""}`}
     >
-      <span onClick={() => toggle(todo._id)} className={classes.task}>
+      <span
+        onClick={() => (!isDisabled ? toggle(todo._id) : null)}
+        className={classes.task}
+      >
         {todo.title}
       </span>
       <IconButton
+        disabled={isDisabled}
         onClick={() => {
           remove(todo._id);
         }}
